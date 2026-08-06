@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="RelayReady turns rough Nostr marketplace listings into clear, buyer-ready copy.">
+  <title>RelayReady — Nostr listing tune-up</title>
+  <style>
+    :root{--ink:#11130f;--paper:#f0eee5;--acid:#d9ff4f;--violet:#7056f5;--muted:#686a63;--line:#c6c4ba}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif}a{color:inherit;text-decoration:none}
+    header{height:72px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(240,238,229,.95);backdrop-filter:blur(10px);z-index:2}
+    .brand{font-weight:900;font-size:20px;display:flex;gap:11px;align-items:center}.brand i{font-style:normal;font-size:12px;background:var(--ink);color:var(--acid);width:34px;height:34px;display:grid;place-items:center}
+    header nav{display:flex;gap:28px;font-size:13px;font-weight:700}.cta{background:var(--acid);border:1px solid var(--ink);padding:14px 18px;font-weight:900;display:inline-block}
+    .hero{padding:9vw 5vw 5vw;min-height:720px;display:grid;grid-template-columns:1.1fr .7fr;gap:7vw;align-items:center;border-bottom:1px solid var(--ink)}
+    .eyebrow{font:700 12px/1.3 monospace;letter-spacing:.12em;text-transform:uppercase}.eyebrow:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#17b460;margin-right:10px}
+    h1{font-size:clamp(70px,10vw,150px);line-height:.8;letter-spacing:-.085em;margin:55px 0 40px}h1 em{font-family:Georgia,serif;font-weight:400;color:var(--violet)}
+    .hero p{font-size:22px;line-height:1.5;max-width:650px}.offer{background:var(--ink);color:white;padding:38px}.offer strong{display:block;font-size:110px;line-height:1;color:var(--acid);letter-spacing:-.07em}.offer ul{padding-left:20px;line-height:2}.offer small{color:#aaa;display:block;margin-top:15px;line-height:1.5}
+    section{padding:8vw 5vw}.section-head{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--ink);padding-bottom:24px;margin-bottom:36px}.section-head span{font:700 12px monospace;color:var(--muted)}h2{font-size:clamp(42px,6vw,80px);line-height:.95;letter-spacing:-.06em;margin:0}
+    .tool{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink)}.inputs{padding:30px;display:grid;gap:19px}.inputs label{font:700 12px monospace;text-transform:uppercase;display:grid;gap:8px}.inputs input,.inputs textarea{border:1px solid var(--line);background:#fffef8;padding:13px;font:16px Arial}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.output{background:var(--ink);color:#eee;padding:30px}.output pre{white-space:pre-wrap;font:13px/1.65 monospace}.copy{border:1px solid var(--acid);background:none;color:var(--acid);padding:10px 13px;cursor:pointer;font-weight:800}.privacy{margin-top:15px;color:var(--muted);font-size:12px}
+    .steps{background:var(--violet);color:white;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;padding:0;background-clip:content-box}.step{padding:5vw;background:var(--violet);border-right:1px solid rgba(255,255,255,.4)}.step b{font:700 12px monospace;color:var(--acid)}.step h3{font-size:28px;margin:25px 0 14px}.step p{line-height:1.5}.bottom{display:grid;grid-template-columns:1fr .6fr;gap:10vw;align-items:center}.bottom p{font-size:20px;line-height:1.55}footer{padding:35px 5vw;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+    @media(max-width:800px){header nav{display:none}.hero,.tool,.bottom{grid-template-columns:1fr}.hero{padding-top:90px}.steps{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid rgba(255,255,255,.4)}.section-head{display:grid;gap:18px}.row{grid-template-columns:1fr}footer{display:grid;gap:12px}}
+  </style>
+</head>
+<body>
+  <header><a class="brand" href="#top"><i>RR</i>RelayReady</a><nav><a href="#tool">Try the tool</a><a href="#process">What you get</a></nav><a class="cta" href="https://shopstr.store/marketplace" target="_blank" rel="noreferrer">Order on Shopstr ↗</a></header>
+  <main>
+    <div class="hero" id="top">
+      <div><div class="eyebrow">Independent Nostr seller service</div><h1>Sell clearly.<br><em>Keep your keys.</em></h1><p>A human edit for Shopstr listings that need less jargon, more proof, and a next step buyers can understand.</p></div>
+      <aside class="offer"><span class="eyebrow">Listing tune-up</span><strong>$7</strong><ul><li>Tighter title + 120-word description</li><li>Five useful tags</li><li>Sats price check</li><li>Fulfillment checklist</li><li>One focused revision</li></ul><a class="cta" href="https://shopstr.store/marketplace" target="_blank" rel="noreferrer">Find RelayReady on Shopstr ↗</a><small>Delivered by encrypted Nostr message. Never send a private key.</small></aside>
+    </div>
+    <section id="tool">
+      <div class="section-head"><div><span>FREE BROWSER TOOL / NO SIGN-IN</span><h2>Shape the rough draft.</h2></div><span>nothing leaves this tab</span></div>
+      <div class="tool">
+        <div class="inputs">
+          <label>What are you selling?<input id="product" value="Handmade linen field pouch"></label>
+          <label>Who is it for?<input id="buyer" value="travelers who carry a small analog kit"></label>
+          <label>Practical outcome<textarea id="benefit" rows="2">keeps daily tools visible, quiet, and easy to reach</textarea></label>
+          <div class="row"><label>USD price<input id="price" type="number" min="0" step=".01" value="34"></label><label>BTC / USD<input id="rate" type="number" min="1" value="100000"></label></div>
+        </div>
+        <div class="output"><button class="copy" id="copy">Copy draft</button><pre id="draft"></pre></div>
+      </div><p class="privacy">This tool makes a local first draft only. RelayReady's paid service adds a real editorial pass, pricing context, and a fulfillment review.</p>
+    </section>
+    <section class="steps" id="process">
+      <article class="step"><b>01 / SEND</b><h3>Your rough listing</h3><p>Share the current copy, intended buyer, proof points, and delivery promise in an encrypted Nostr message.</p></article>
+      <article class="step"><b>02 / EDIT</b><h3>A buyer-ready pass</h3><p>RelayReady removes vagueness, surfaces the practical value, checks the sats price, and writes the next step.</p></article>
+      <article class="step"><b>03 / REFINE</b><h3>One focused revision</h3><p>You get one revision on clarity or tone. Target turnaround is 12 hours after the intake is complete.</p></article>
+    </section>
+    <section class="bottom"><div><span class="eyebrow">Scope stays small on purpose</span><h2>One listing.<br>One useful result.</h2></div><div><p>No fake reviews, keyword stuffing, deceptive claims, or custody of your keys. The service is an editorial deliverable, not a promise of traffic or sales.</p><a class="cta" href="https://shopstr.store/marketplace" target="_blank" rel="noreferrer">Order the $7 tune-up ↗</a></div></section>
+  </main>
+  <footer><span>RelayReady · Nostr seller field kit</span><span>No analytics · No account · No key custody</span></footer>
+  <script>
+    const $=id=>document.getElementById(id);function render(){const p=$('product').value.trim()||'Your product',b=$('buyer').value.trim()||'people who value useful goods',o=$('benefit').value.trim()||'solves one everyday problem',usd=Number($('price').value)||0,rate=Number($('rate').value)||1,sats=Math.ceil(usd/rate*1e8);$('draft').textContent=`${p} — made for ${b}\n\n${o}.\n\nWHY IT EARNS A PLACE\n• Clear price: $${usd.toFixed(2)} (about ${sats.toLocaleString()} sats at your entered rate)\n• Add one specific material or method proof\n• State exactly when and how fulfillment happens\n\nWHAT HAPPENS NEXT\nAfter payment, confirm timing and scope in an encrypted message.\n\nSuggested tags: #shopstr #independentmaker #bitcoin`;}
+    ['product','buyer','benefit','price','rate'].forEach(id=>$(id).addEventListener('input',render));$('copy').addEventListener('click',async()=>{await navigator.clipboard.writeText($('draft').textContent);$('copy').textContent='Copied';setTimeout(()=>$('copy').textContent='Copy draft',1400)});render();
+  </script>
+</body>
+</html>
