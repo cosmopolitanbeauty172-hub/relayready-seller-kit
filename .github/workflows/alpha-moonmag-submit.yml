@@ -1,0 +1,104 @@
+name: Alpha Moon Mag submission
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit-article:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_ADDRESS: contact@themoonmag.com
+      TARGET_MX: themoonmag-com.mail.protection.outlook.com
+      SENDER_ADDRESS: alpha-hn-918815ee8b02448b@web-library.net
+      REPLY_TO_ADDRESS: alpha-hn-918815ee8b02448b@web-library.net
+      ARTICLE_B64: ${{ secrets.MOONMAG_ARTICLE_B64 }}
+      ARTICLE_SHA256: 41c1ddaeea261a2f040bc58783397c77c50b790b44d2cbcfe7f36a1b94956ebe
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Validate and submit the unpublished article
+        shell: python
+        run: |
+          import base64
+          import datetime
+          import hashlib
+          import os
+          import smtplib
+          import socket
+          import ssl
+          from email.message import EmailMessage
+          from email.utils import format_datetime, make_msgid
+
+          target = os.environ["TARGET_ADDRESS"]
+          sender = os.environ["SENDER_ADDRESS"]
+          reply_to = os.environ["REPLY_TO_ADDRESS"]
+          mx_host = os.environ["TARGET_MX"]
+          run_url = os.environ["RUN_URL"]
+          article_bytes = base64.b64decode(os.environ["ARTICLE_B64"], validate=True)
+          article_sha = hashlib.sha256(article_bytes).hexdigest()
+
+          if article_sha != os.environ["ARTICLE_SHA256"]:
+              raise RuntimeError(f"Article SHA-256 mismatch: {article_sha}")
+
+          article = article_bytes.decode("utf-8")
+          socket.getaddrinfo(mx_host, 25, type=socket.SOCK_STREAM)
+
+          message = EmailMessage()
+          message["From"] = f"Alpha RelayReady <{sender}>"
+          message["To"] = target
+          message["Reply-To"] = reply_to
+          message["Subject"] = (
+              "Article submission: The Missing Checkout Layer — "
+              "Nostr Gift Wrap and Bitcoin Commerce"
+          )
+          message["Date"] = format_datetime(datetime.datetime.now(datetime.timezone.utc))
+          message["Message-ID"] = make_msgid(domain="relayready-seller-kit.github-actions")
+          message["X-Alpha-Route"] = "github-actions-direct-mx-v12"
+          message["X-GitHub-Repository"] = os.environ["GITHUB_REPOSITORY"]
+          message["X-GitHub-Run-ID"] = os.environ["GITHUB_RUN_ID"]
+          message.set_content(
+              "Hello Moon Mag editorial team,\n\n"
+              "Please find attached my original, unpublished article, "
+              "‘The Missing Checkout Layer: What Nostr’s Gift-Wrapped Messages "
+              "Can—and Cannot—Do for Bitcoin Commerce.’ The main article is "
+              "1,254 words excluding its title, byline, and primary-source list "
+              "(1,374 words for the complete attached file). It follows the "
+              "Moon Mag guidelines and cites six primary protocol sources.\n\n"
+              "I am submitting it for your review under the publication and "
+              "payment terms in your official writing guidelines. Please reply "
+              "to this address with any editorial questions.\n\n"
+              "Best,\n"
+              "Alpha RelayReady\n\n"
+              f"Authenticated sending workflow: {run_url}\n"
+          )
+          message.add_attachment(
+              article,
+              subtype="markdown",
+              filename="moonmag-nostr-giftwrap-commerce.md",
+          )
+
+          with smtplib.SMTP(mx_host, 25, timeout=30) as smtp:
+              smtp.set_debuglevel(1)
+              smtp.ehlo()
+              if smtp.has_extn("starttls"):
+                  smtp.starttls(context=ssl.create_default_context())
+                  smtp.ehlo()
+              refused = smtp.send_message(
+                  message,
+                  from_addr=sender,
+                  to_addrs=[target],
+              )
+
+          if refused:
+              raise RuntimeError(f"Recipient refused: {refused}")
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("## Moon Mag article submission\n\n")
+              summary.write(f"- Recipient: `{target}`\n")
+              summary.write(f"- Recipient MX: `{mx_host}:25`\n")
+              summary.write(f"- Sender / Reply-To: `{sender}`\n")
+              summary.write(f"- Article SHA-256: `{article_sha}`\n")
+              summary.write("- SMTP submission completed without refused recipients.\n")
