@@ -1,0 +1,73 @@
+name: Alpha outbound test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  direct-mx-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_ADDRESS: alpha-hn-918815ee8b02448b@web-library.net
+      SENDER_ADDRESS: alpha-hn-918815ee8b02448b@web-library.net
+      REPLY_TO_ADDRESS: alpha-hn-918815ee8b02448b@web-library.net
+      TARGET_MX: in.mail.tm
+      TEST_SUBJECT: Alpha v12 GitHub Actions outbound test - run ${{ github.run_id }}
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Deliver one fixed test message to the recipient MX
+        shell: python
+        run: |
+          import datetime
+          import os
+          import smtplib
+          import ssl
+          from email.message import EmailMessage
+          from email.utils import format_datetime, make_msgid
+
+          target = os.environ["TARGET_ADDRESS"]
+          sender = os.environ["SENDER_ADDRESS"]
+          reply_to = os.environ["REPLY_TO_ADDRESS"]
+          mx_host = os.environ["TARGET_MX"]
+          run_url = os.environ["RUN_URL"]
+
+          message = EmailMessage()
+          message["From"] = f"Alpha RelayReady <{sender}>"
+          message["To"] = target
+          message["Reply-To"] = reply_to
+          message["Subject"] = os.environ["TEST_SUBJECT"]
+          message["Date"] = format_datetime(datetime.datetime.now(datetime.timezone.utc))
+          message["Message-ID"] = make_msgid(domain="relayready-seller-kit.github-actions")
+          message["X-Alpha-Route"] = "github-actions-direct-mx-v12"
+          message["X-GitHub-Repository"] = os.environ["GITHUB_REPOSITORY"]
+          message["X-GitHub-Run-ID"] = os.environ["GITHUB_RUN_ID"]
+          message.set_content(
+              "This is the fixed Alpha v12 outbound capability test.\n\n"
+              f"Authenticated repository workflow: {run_url}\n"
+              "Sender and Reply-To are the Alpha-controlled operating address.\n"
+          )
+
+          with smtplib.SMTP(mx_host, 25, timeout=30) as smtp:
+              smtp.set_debuglevel(1)
+              smtp.ehlo()
+              if smtp.has_extn("starttls"):
+                  smtp.starttls(context=ssl.create_default_context())
+                  smtp.ehlo()
+              refused = smtp.send_message(
+                  message,
+                  from_addr=sender,
+                  to_addrs=[target],
+              )
+
+          if refused:
+              raise RuntimeError(f"Recipient refused: {refused}")
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("## Alpha v12 outbound test\n\n")
+              summary.write(f"- Fixed recipient: `{target}`\n")
+              summary.write(f"- Recipient MX: `{mx_host}:25`\n")
+              summary.write(f"- Sender / Reply-To: `{sender}`\n")
+              summary.write("- SMTP submission completed without refused recipients.\n")
